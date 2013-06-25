@@ -24,7 +24,7 @@
 
 	// instantiate the pre-loader with an onProgress and onComplete handler
 	new preLoader(imagesArray, {
-		// pipeline: true,
+		pipeline: true,
 		onProgress: function(img, imageEl, index){
 			// fires every time an image is done or errors.
 			// imageEl will be falsy if error
