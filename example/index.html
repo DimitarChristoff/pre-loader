@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>pre-loader example</title>
+</head>
+<body>
+<script src="../lib/pre-loader.js"></script>
+<script type="text/javascript">
+	// assign 50 non-cache-able images via an image generator
+	var imagesArray = new Array(50).join(',').split(',');
+	imagesArray = imagesArray.map(function(el, i){
+		// an actual dummy image generator online.
+		return 'http://dummyimage.com/600x400/000/' + i + '?' + +new Date();
+	});
+
+	// create a HTML5 progress element
+	var progress = document.createElement('progress');
+	progress.setAttribute('max', imagesArray.length);
+	progress.setAttribute('value', 0);
+	document.body.appendChild(progress);
+
+	var legend = document.createElement('span');
+	document.body.appendChild(legend);
+
+	// instantiate the pre-loader with an onProgress and onComplete handler
+	new preLoader(imagesArray, function(img, imageEl, index){
+		// fires every time an image is done or errors.
+		// imageEl will be falsy if error
+		console.log('just ' +  (!imageEl ? 'failed: ' : 'loaded: ') + img);
+
+		var percent = Math.floor((100 / this.queue.length) * this.completed.length);
+
+		// update the progress element
+		legend.innerHTML = '' + index + ' / ' + this.queue.length + ' ('+percent+'%)';
+		progress.value = index;
+
+		// can access any propery of this
+		console.log(this.completed.length + this.errors.length + ' / ' + this.queue.length + ' done');
+	}, function(loaded, errors){
+		// fires when whole list is done. cache is primed.
+		console.log('done', loaded);
+
+		if (errors){
+			console.log('the following failed', errors);
+		}
+	});
+</script>
+</body>
+</html>
