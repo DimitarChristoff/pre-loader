@@ -42,4 +42,4 @@ new preLoader([
 });
 ```
 
-For more info, see the `example/index.html` file.
+For more info, see the `example/index.html` file or look at [http://jsfiddle.net/dimitar/mFQm6/](http://jsfiddle.net/dimitar/mFQm6/)
