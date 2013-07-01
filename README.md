@@ -98,8 +98,8 @@ new preLoader(['image1.jpg', 'http://domain.com/image2.jpg'], {
 Waterfall with pipeline enabled:
 ![pipeline](example/images/pipeline-waterfall.jpg)
 
-Waterfall with pipeline enabled:
-![pipeline](example/images/parallel-waterfall.jpg)
+Waterfall with parallel downloading enabled:
+![parallel](example/images/parallel-waterfall.jpg)
 
 
 
