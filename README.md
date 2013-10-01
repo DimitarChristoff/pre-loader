@@ -83,7 +83,7 @@ new preLoader(['image1.jpg', 'http://domain.com/image2.jpg'], {
 
 ## Pipeline vs parallel
 
-Optionally, you can control how the loading takes place. You can either let the browser resolve the resurce handling or you could stick to using a single thread with pipelining (each image that completes calls the next one in the stack).
+Optionally, you can control how the loading takes place. You can either let the browser resolve the resource handling or you could stick to using a single thread with pipelining (each image that completes calls the next one in the stack).
 
 ```javascript
 new preLoader(['image1.jpg', 'http://domain.com/image2.jpg'], {
