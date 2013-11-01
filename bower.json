@@ -1,7 +1,9 @@
 {
   "name": "pre-loader",
   "version": "0.3.1",
-  "main": ["pre-loader.js"],
+  "main": [
+    "pre-loader.js"
+  ],
   "ignore": [
     "**/.*",
     "node_modules",
@@ -9,6 +11,21 @@
     "README.md",
     ".jshintrc",
     "bower.json",
-    "package.json"
-  ]
+    "package.json",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "homepage": "https://github.com/DimitarChristoff/pre-loader",
+  "authors": [
+    "DimitarChristoff <christoff@gmail.com>"
+  ],
+  "description": "Event-driven sequential image preloading in vanilla js.",
+  "keywords": [
+    "pre-loader",
+    "pre-load",
+    "lazyload",
+    "images"
+  ],
+  "license": "MIT"
 }
