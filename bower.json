@@ -1,0 +1,14 @@
+{
+  "name": "pre-loader",
+  "version": "0.3.1",
+  "main": ["pre-loader.js"],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "example/",
+    "README.md",
+    ".jshintrc",
+    "bower.json",
+    "package.json"
+  ]
+}

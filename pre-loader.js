@@ -96,6 +96,7 @@
 		return this;
 	};
 
+	/*jshint validthis:true */
 	function checkProgress(src, image){
 		// intermediate checker for queue remaining. not exported.
 		// called on preLoader instance as scope
@@ -113,7 +114,7 @@
 
 		return this;
 	}
-
+	/*jshint validthis:false */
 
 	if (typeof define === 'function' && define.amd){
 		// we have an AMD loader.
