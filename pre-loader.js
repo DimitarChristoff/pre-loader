@@ -1,5 +1,8 @@
-(function(){
+;(function(){
 	'use strict';
+
+	// can we support addEventListener
+	var hasNative = 'addEventListener' in (new Image());
 
 	var preLoader = function(images, options){
 		this.options = {
@@ -42,30 +45,55 @@
 		return this;
 	};
 
+	preLoader.prototype.addEvents = function(image, src, index){
+		var self = this,
+			o = this.options,
+			cleanup = function(){
+				if (hasNative){
+					this.removeEventListener('error', abort);
+					this.removeEventListener('abort', abort);
+					this.removeEventListener('load', load);
+				}
+				else {
+					this.onerror = this.onabort = this.onload = null;
+				}
+			},
+			abort = function(){
+				console.log('src error:' + src);
+				cleanup.call(this);
+
+				self.errors.push(src);
+				o.onError && o.onError.call(self, src);
+				checkProgress.call(self, src);
+				o.pipeline && self.loadNext(index);
+			},
+			load = function(){
+				console.log('src load:' + src);
+				cleanup.call(this);
+
+				// store progress. this === image
+				self.completed.push(src); // this.src may differ
+				checkProgress.call(self, src, this);
+				o.pipeline && self.loadNext(index);
+			};
+
+		if (hasNative){
+			image.addEventListener('error', abort, false);
+			image.addEventListener('abort', abort, false);
+			image.addEventListener('load', load, false);
+		}
+		else {
+			image.onerror = image.onabort = abort;
+			image.onload = load;
+		}
+
+	};
+
 	preLoader.prototype.load = function(src, index){
 		/*jshint -W058 */
-		var image = new Image,
-			self = this,
-			o = this.options;
+		var image = new Image;
 
-		// set some event handlers
-		image.onerror = image.onabort = function(){
-			this.onerror = this.onabort = this.onload = null;
-
-			self.errors.push(src);
-			o.onError && o.onError.call(self, src);
-			checkProgress.call(self, src);
-			o.pipeline && self.loadNext(index);
-		};
-
-		image.onload = function(){
-			this.onerror = this.onabort = this.onload = null;
-
-			// store progress. this === image
-			self.completed.push(src); // this.src may differ
-			checkProgress.call(self, src, this);
-			o.pipeline && self.loadNext(index);
-		};
+		this.addEvents(image, src, index);
 
 		// actually load
 		image.src = src;
