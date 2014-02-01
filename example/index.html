@@ -13,6 +13,9 @@
 		return 'images/dummy.jpg?' + +new Date() + i;
 	});
 
+	// uncomment to see error handling.
+	// imagesArray.push('404img.jpg');
+
 	// create a HTML5 progress element
 	var progress = document.createElement('progress');
 	progress.setAttribute('max', imagesArray.length);
@@ -46,6 +49,9 @@
 			if (errors){
 				console.log('the following failed', errors);
 			}
+		},
+		onError: function(bombed){
+			console.log('error', bombed);
 		}
 	});
 </script>
