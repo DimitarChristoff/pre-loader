@@ -4,6 +4,11 @@
 	// can we support addEventListener
 	var hasNative = 'addEventListener' in (new Image());
 
+	/**
+	 * @constructor
+	 * @param {Array} images - string of images to load
+	 * @param {Object=} options - overrides to defaults
+	 */
 	var preLoader = function(images, options){
 		this.options = {
 			pipeline: false,
@@ -59,7 +64,6 @@
 				}
 			},
 			abort = function(){
-				console.log('src error:' + src);
 				cleanup.call(this);
 
 				self.errors.push(src);
@@ -68,7 +72,6 @@
 				o.pipeline && self.loadNext(index);
 			},
 			load = function(){
-				console.log('src load:' + src);
 				cleanup.call(this);
 
 				// store progress. this === image
