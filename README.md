@@ -5,15 +5,16 @@ Event-driven sequential image preloading in vanilla js.
 
 ## Installing
 
-Either [download](https://github.com/DimitarChristoff/pre-loader/releases) it; 
-Clone the repo:
+Either [download](https://github.com/DimitarChristoff/pre-loader/releases) it
+
+...or, clone the repo:
 ```sh
 $ git clone https://github.com/DimitarChristoff/pre-loader.git
 ...
 $ cd pre-loader
 ```
 
-Use bower:
+...or use bower:
 
 ```sh
 $ bower install pre-loader --save
