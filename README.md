@@ -3,6 +3,22 @@ pre-loader
 
 Event-driven sequential image preloading in vanilla js.
 
+## Installing
+
+Either [download](https://github.com/DimitarChristoff/pre-loader/releases) it
+
+...or, clone the repo:
+```sh
+$ git clone https://github.com/DimitarChristoff/pre-loader.git
+...
+$ cd pre-loader
+```
+
+...or use bower:
+
+```sh
+$ bower install pre-loader --save
+```
 
 ## Basic use
 
