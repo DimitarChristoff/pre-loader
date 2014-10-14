@@ -25,6 +25,11 @@
 		this.queue.length && this.options.auto && this.processQueue();
 	};
 
+	/**
+	 * naive shallow copy/reference from options into proto options
+	 * @param {Object} options
+	 * @returns {preLoader}
+	 */
 	preLoader.prototype.setOptions = function(options){
 		// shallow copy
 		var o = this.options,
@@ -35,22 +40,37 @@
 		return this;
 	};
 
+	/**
+	 * stores a local array, dereferenced from original
+	 * @param images
+	 * @returns {preLoader}
+	 */
 	preLoader.prototype.addQueue = function(images){
-		// stores a local array, dereferenced from original
 		this.queue = images.slice();
 
 		return this;
 	};
 
+	/**
+	 * reset the arrays
+	 * @returns {preLoader}
+	 */
 	preLoader.prototype.reset = function(){
-		// reset the arrays
 		this.completed = [];
 		this.errors = [];
 
 		return this;
 	};
 
-	preLoader.prototype.addEvents = function(image, src, index){
+	/**
+	 * Subscribe to events for an imag object and a source
+	 * @param {Object} image
+	 * @param {String} src
+	 * @param {Number} index
+	 * @returns {preLoader}
+	 * @private
+	 */
+	preLoader.prototype._addEvents = function(image, src, index){
 		var self = this,
 			o = this.options,
 			cleanup = function(){
@@ -68,16 +88,16 @@
 
 				self.errors.push(src);
 				o.onError && o.onError.call(self, src);
-				checkProgress.call(self, src);
-				o.pipeline && self.loadNext(index);
+				_checkProgress.call(self, src);
+				o.pipeline && self._loadNext(index);
 			},
 			load = function(){
 				cleanup.call(this);
 
 				// store progress. this === image
 				self.completed.push(src); // this.src may differ
-				checkProgress.call(self, src, this);
-				o.pipeline && self.loadNext(index);
+				_checkProgress.call(self, src, this);
+				o.pipeline && self._loadNext(index);
 			};
 
 		if (hasNative){
@@ -90,13 +110,21 @@
 			image.onload = load;
 		}
 
+		return this;
 	};
 
-	preLoader.prototype.load = function(src, index){
+	/**
+	 * Private API to load an image
+	 * @param {String} src
+	 * @param {Number} index
+	 * @returns {preLoader}
+	 * @private
+	 */
+	preLoader.prototype._load = function(src, index){
 		/*jshint -W058 */
 		var image = new Image;
 
-		this.addEvents(image, src, index);
+		this._addEvents(image, src, index);
 
 		// actually load
 		image.src = src;
@@ -104,14 +132,24 @@
 		return this;
 	};
 
-	preLoader.prototype.loadNext = function(index){
+	/**
+	 * Move up the queue index
+	 * @param {Number} index
+	 * @returns {preLoader}
+	 * @private
+	 */
+	preLoader.prototype._loadNext = function(index){
 		// when pipeline loading is enabled, calls next item
 		index++;
-		this.queue[index] && this.load(this.queue[index], index);
+		this.queue[index] && this._load(this.queue[index], index);
 
 		return this;
 	};
 
+	/**
+	 * Iterates through the queue of images to load
+	 * @returns {preLoader}
+	 */
 	preLoader.prototype.processQueue = function(){
 		// runs through all queued items.
 		var i = 0,
@@ -121,14 +159,21 @@
 		// process all queue items
 		this.reset();
 
-		if (!this.options.pipeline) for (; i < len; ++i) this.load(queue[i], i);
-		else this.load(queue[0], 0);
+		if (!this.options.pipeline) for (; i < len; ++i) this._load(queue[i], i);
+		else this._load(queue[0], 0);
 
 		return this;
 	};
 
 	/*jshint validthis:true */
-	function checkProgress(src, image){
+	/**
+	 * Internal checker on the queue progress
+	 * @param {String} src
+	 * @param {Object} image
+	 * @returns {preLoader}
+	 * @private
+	 */
+	function _checkProgress(src, image){
 		// intermediate checker for queue remaining. not exported.
 		// called on preLoader instance as scope
 		var args = [],

@@ -49,7 +49,7 @@ The most basic example to prime the cache with 2 images:
 new preLoader(['image1.jpg', 'http://domain.com/image2.jpg'], {
 	onComplete: function(loaded, errors){
 		console.log('cache primed with:', loaded);
-		errors && errros.length && console.log('these failed:', errors);
+		errors && errors.length && console.log('these failed:', errors);
 	}
 });
 ```
@@ -76,7 +76,7 @@ new preLoader(['image1.jpg', 'http://domain.com/image2.jpg'], {
 	},
 	onComplete: function(loaded, errors){
 		console.log('cache primed with:', loaded);
-		errors && errros.length && console.log('these failed:', errors);
+		errors && errors.length && console.log('these failed:', errors);
 	}
 });
 ```
