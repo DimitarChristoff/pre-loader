@@ -2,8 +2,18 @@
 <html>
 <head>
 	<title>pre-loader example</title>
+	<style >
+		img.preload {
+			width: 10%;
+			height: 10%;
+		}
+	</style>
 </head>
 <body>
+	<img class="preload" src="" data-preload="images/dummy.jpg?1" />
+	<img class="preload" src="" data-preload="images/dummy.jpg?2" />
+	<img class="preload" src="" data-preload="images/dummy.jpg?3" />
+	<img class="preload" src="" data-preload="images/dummy.jpg?4" />
 <script src="../pre-loader.js"></script>
 <script type="text/javascript">
 	// assign 50 non-cache-able images via an image generator
@@ -55,6 +65,8 @@
 			console.log('error', bombed);
 		}
 	});
+
+	preLoader.lazyLoad();
 </script>
 </body>
 </html>

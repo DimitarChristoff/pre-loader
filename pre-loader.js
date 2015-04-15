@@ -9,7 +9,7 @@
 	 * @param {Array} images - string of images to load
 	 * @param {Object=} options - overrides to defaults
 	 */
-	var preLoader = function(images, options){
+	var PreLoader = function(images, options){
 		this.options = {
 			pipeline: false,
 			auto: true,
@@ -28,9 +28,9 @@
 	/**
 	 * naive shallow copy/reference from options into proto options
 	 * @param {Object} options
-	 * @returns {preLoader}
+	 * @returns {PreLoader}
 	 */
-	preLoader.prototype.setOptions = function(options){
+	PreLoader.prototype.setOptions = function(options){
 		// shallow copy
 		var o = this.options,
 			key;
@@ -43,9 +43,9 @@
 	/**
 	 * stores a local array, dereferenced from original
 	 * @param images
-	 * @returns {preLoader}
+	 * @returns {PreLoader}
 	 */
-	preLoader.prototype.addQueue = function(images){
+	PreLoader.prototype.addQueue = function(images){
 		this.queue = images.slice();
 
 		return this;
@@ -53,9 +53,9 @@
 
 	/**
 	 * reset the arrays
-	 * @returns {preLoader}
+	 * @returns {PreLoader}
 	 */
-	preLoader.prototype.reset = function(){
+	PreLoader.prototype.reset = function(){
 		this.completed = [];
 		this.errors = [];
 
@@ -67,10 +67,10 @@
 	 * @param {Object} image
 	 * @param {String} src
 	 * @param {Number} index
-	 * @returns {preLoader}
+	 * @returns {PreLoader}
 	 * @private
 	 */
-	preLoader.prototype._addEvents = function(image, src, index){
+	PreLoader.prototype._addEvents = function(image, src, index){
 		var self = this,
 			o = this.options,
 			cleanup = function(){
@@ -117,10 +117,10 @@
 	 * Private API to load an image
 	 * @param {String} src
 	 * @param {Number} index
-	 * @returns {preLoader}
+	 * @returns {PreLoader}
 	 * @private
 	 */
-	preLoader.prototype._load = function(src, index){
+	PreLoader.prototype._load = function(src, index){
 		/*jshint -W058 */
 		var image = new Image;
 
@@ -135,10 +135,10 @@
 	/**
 	 * Move up the queue index
 	 * @param {Number} index
-	 * @returns {preLoader}
+	 * @returns {PreLoader}
 	 * @private
 	 */
-	preLoader.prototype._loadNext = function(index){
+	PreLoader.prototype._loadNext = function(index){
 		// when pipeline loading is enabled, calls next item
 		index++;
 		this.queue[index] && this._load(this.queue[index], index);
@@ -148,9 +148,9 @@
 
 	/**
 	 * Iterates through the queue of images to load
-	 * @returns {preLoader}
+	 * @returns {PreLoader}
 	 */
-	preLoader.prototype.processQueue = function(){
+	PreLoader.prototype.processQueue = function(){
 		// runs through all queued items.
 		var i = 0,
 			queue = this.queue,
@@ -170,7 +170,7 @@
 	 * Internal checker on the queue progress
 	 * @param {String} src
 	 * @param {Object} image
-	 * @returns {preLoader}
+	 * @returns {PreLoader}
 	 * @private
 	 */
 	function _checkProgress(src, image){
@@ -192,13 +192,40 @@
 	}
 	/*jshint validthis:false */
 
+	/**
+	 * Static method that loads images lazily from DOM based upon data-preload attribute
+	 * @param {Object} options= optional options to pass to PreLoader
+	 * @returns {PreLoader} instance
+	 */
+	PreLoader.lazyLoad = function(options){
+		if (!options)
+			options = {};
+
+		var lazyImages = document.querySelectorAll(options.selector || 'img[data-preload]'),
+			i = 0,
+			l = lazyImages.length,
+			toLoad = [],
+			oldProgress;
+
+		for (; i < l; i++) toLoad.push(lazyImages[i].getAttribute('data-preload'));
+
+		options.onProgress && (oldProgress = options.onProgress);
+		options.onProgress = function(item, imgEl, index){
+			lazyImages[index-1].src = item;
+			lazyImages[index-1].removeAttribute('data-preload');
+			oldProgress && oldProgress.apply(this, arguments);
+		};
+
+		return toLoad.length ? new PreLoader(toLoad, options) : null;
+	};
+
 	if (typeof define === 'function' && define.amd){
 		// we have an AMD loader.
 		define(function(){
-			return preLoader;
+			return PreLoader;
 		});
 	}
 	else {
-		this.preLoader = preLoader;
+		this.preLoader = PreLoader;
 	}
 }).call(this);

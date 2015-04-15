@@ -1,7 +1,7 @@
 pre-loader
 ==========
 
-Event-driven sequential image preloading in vanilla js.
+Event-driven sequential image preloading and lazyloading in vanilla js.
 
 ## Installing
 
@@ -120,3 +120,21 @@ Waterfall with parallel downloading enabled:
 
 
 For more info, see the `example` folder or look at [http://jsfiddle.net/dimitar/mFQm6/](http://jsfiddle.net/dimitar/mFQm6/)
+
+## Lazy loading of images
+
+Lazy loading works based upon existing DOM img elements with a `data-preload` attribute, pointing to the image to load.
+
+eg.
+
+```html
+<img src="loading.gif" data-preload="images/real-image.jpg" />
+<script>
+	// go with defaults, we're good.
+	var instance = preLoader.lazyLoad();
+</script>
+```
+
+The `lazyLoad` method accepts arguments to the normal `preLoader` constructor and additionally, a `selector` property
+that defaults to `img[data-preload]`. It will return an instance and all the callbacks will fire as expected. When
+an image matches the DOM element, it will set the `src` property and remove the `data-preload` attribute.
