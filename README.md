@@ -1,7 +1,7 @@
 pre-loader
 ==========
 
-Event-driven sequential image preloading and lazyloading in vanilla js.
+Event-driven sequential image preloading and lazyloading in vanilla js (no dependencies). Supports IE8 or higher, though the main lib should work even in IE6. 
 
 ## Installing
 
@@ -20,7 +20,7 @@ $ cd pre-loader
 $ bower install pre-loader --save
 ```
 
-## Basic use
+## Basic use via JavaScript
 
 Load an array, get a functional callback when done:
 
@@ -132,6 +132,8 @@ eg.
 <script>
 	// go with defaults, we're good.
 	var instance = preLoader.lazyLoad();
+	// or 
+	var instance = preLoader.lazyLoad('#portfolio img.preload', { onComplete: function(){ });
 </script>
 ```
 
