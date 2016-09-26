@@ -1,67 +1,75 @@
-;(function(){
-  'use strict';
+/**
+ * Internal checker on the queue progress
+ * @param {String} src
+ * @param {Object} image
+ * @returns {PreLoader}
+ * @private
+ */
+function _checkProgress(src, image){
+  // intermediate checker for queue remaining. not exported.
+  // called on preLoader instance as scope
+  const args = [],
+    o = this.options;
 
-  // can we support addEventListener
-  const hasNative = 'addEventListener' in (new Image());
+  // call onProgress
+  o.onProgress && src && o.onProgress.call(this, src, image, this.completed.length);
 
-  /**
-   * @constructor
-   * @param {Array} images - string of images to load
-   * @param {Object=} options - overrides to defaults
-   */
-  const PreLoader = function(images, options){
-    this.options = {
-      pipeline: false,
-      auto: true,
-      prefetch: false,
-      /* onProgress: function(){}, */
-      /* onError: function(){}, */
-      onComplete: function(){
-      }
-    };
+  if (this.completed.length + this.errors.length === this.queue.length){
+    args.push(this.completed);
+    this.errors.length && args.push(this.errors);
+    o.onComplete.apply(this, args);
+  }
 
-    options && typeof options == 'object' && this.setOptions(options);
+  return this;
+}
 
+
+// can we support addEventListener
+const hasNative = 'addEventListener' in (new Image());
+
+/**
+ * @constructor
+ * @param {Array} images - string of images to load
+ * @param {Object=} options - overrides to defaults
+ */
+class PreLoader {
+
+  options = {
+    pipeline: false,
+    auto: true,
+    prefetch: false,
+    /* onProgress: function(){}, */
+    /* onError: function(){}, */
+    onComplete: function(){}
+  };
+
+  constructor(images, options = {}){
+    Object.assign(this.options, options);
     this.addQueue(images);
     this.queue.length && this.options.auto && this.processQueue();
-  };
-
-  /**
-   * naive shallow copy/reference from options into proto options
-   * @param {Object} options
-   * @returns {PreLoader}
-   */
-  PreLoader.prototype.setOptions = function(options){
-    // shallow copy
-    const o = this.options;
-    let key;
-
-    for (key in options) options.hasOwnProperty(key) && (o[key] = options[key]);
-
-    return this;
-  };
+  }
 
   /**
    * stores a local array, dereferenced from original
    * @param images
    * @returns {PreLoader}
    */
-  PreLoader.prototype.addQueue = function(images){
+  addQueue(images){
     this.queue = images.slice();
 
     return this;
-  };
+  }
 
   /**
    * reset the arrays
    * @returns {PreLoader}
    */
-  PreLoader.prototype.reset = function(){
+  reset(){
     this.completed = [];
     this.errors = [];
 
     return this;
-  };
+  }
 
   /**
    * Subscribe to events for an imag object and a source
@@ -71,48 +79,48 @@
    * @returns {PreLoader}
    * @private
    */
-  PreLoader.prototype._addEvents = function(image, src, index){
-    const self = this,
-          o = this.options,
-          cleanup = function(){
-            if (hasNative){
-              this.removeEventListener('error', abort);
-              this.removeEventListener('abort', abort);
-              this.removeEventListener('load', load);
-            }
-            else {
-              this.onerror = this.onabort = this.onload = null;
-            }
-          },
-          abort = function(){
-            cleanup.call(this);
+  _addEvents(image, src, index){
+      const self = this,
+        o = this.options,
+        cleanup = function(){
+          if (hasNative){
+            this.removeEventListener('error', abort);
+            this.removeEventListener('abort', abort);
+            this.removeEventListener('load', load);
+          }
+          else {
+            this.onerror = this.onabort = this.onload = null;
+          }
+        },
+        abort = function(){
+          cleanup.call(this);
 
-            self.errors.push(src);
-            o.onError && o.onError.call(self, src);
-            _checkProgress.call(self, src);
-            o.pipeline && self._loadNext(index);
-          },
-          load = function(){
-            cleanup.call(this);
+          self.errors.push(src);
+          o.onError && o.onError.call(self, src);
+          _checkProgress.call(self, src);
+          o.pipeline && self._loadNext(index);
+        },
+        load = function(){
+          cleanup.call(this);
 
-            // store progress. this === image
-            self.completed.push(src); // this.src may differ
-            _checkProgress.call(self, src, this);
-            o.pipeline && self._loadNext(index);
-          };
+          // store progress. this === image
+          self.completed.push(src); // this.src may differ
+          _checkProgress.call(self, src, this);
+          o.pipeline && self._loadNext(index);
+        };
 
-    if (hasNative){
-      image.addEventListener('error', abort, false);
-      image.addEventListener('abort', abort, false);
-      image.addEventListener('load', load, false);
-    }
-    else {
-      image.onerror = image.onabort = abort;
-      image.onload = load;
-    }
+      if (hasNative){
+        image.addEventListener('error', abort, false);
+        image.addEventListener('abort', abort, false);
+        image.addEventListener('load', load, false);
+      }
+      else {
+        image.onerror = image.onabort = abort;
+        image.onload = load;
+      }
 
-    return this;
-  };
+      return this;
+  }
 
   /**
    * Private API to load an image
@@ -121,8 +129,7 @@
    * @returns {PreLoader}
    * @private
    */
-  PreLoader.prototype._load = function(src, index){
-    /*jshint -W058 */
+  _load(src, index){
     const image = new Image;
 
     this._addEvents(image, src, index);
@@ -131,7 +138,7 @@
     image.src = src;
 
     return this;
-  };
+  }
 
   /**
    * Move up the queue index
@@ -139,22 +146,22 @@
    * @returns {PreLoader}
    * @private
    */
-  PreLoader.prototype._loadNext = function(index){
+  _loadNext(index){
     // when pipeline loading is enabled, calls next item
     index++;
     this.queue[index] && this._load(this.queue[index], index);
 
     return this;
-  };
+  }
 
   /**
    * Iterates through the queue of images to load
    * @returns {PreLoader}
    */
-  PreLoader.prototype.processQueue = function(){
+  processQueuefunction(){
     // runs through all queued items.
-    const queue = this.queue,
-          len = queue.length;
+    const queue = this.queue;
+    const len = queue.length;
 
     let i = 0;
 
@@ -165,51 +172,22 @@
     else this._load(queue[0], 0);
 
     return this;
-  };
-
-  /*jshint validthis:true */
-  /**
-   * Internal checker on the queue progress
-   * @param {String} src
-   * @param {Object} image
-   * @returns {PreLoader}
-   * @private
-   */
-  function _checkProgress(src, image){
-    // intermediate checker for queue remaining. not exported.
-    // called on preLoader instance as scope
-    const args = [],
-          o = this.options;
-
-    // call onProgress
-    o.onProgress && src && o.onProgress.call(this, src, image, this.completed.length);
-
-    if (this.completed.length + this.errors.length === this.queue.length){
-      args.push(this.completed);
-      this.errors.length && args.push(this.errors);
-      o.onComplete.apply(this, args);
-    }
-
-    return this;
   }
-
-  /*jshint validthis:false */
 
   /**
    * Static method that loads images lazily from DOM based upon data-preload attribute
    * @param {Object} options= optional options to pass to PreLoader
    * @returns {PreLoader} instance
    */
-  PreLoader.lazyLoad = function(options){
+  static lazyLoad(options){
     if (!options)
       options = {};
 
-    const lazyImages = document.querySelectorAll(options.selector || 'img[data-preload]'),
-          l = lazyImages.length,
-          toLoad = [];
+    const lazyImages = document.querySelectorAll(options.selector || 'img[data-preload]');
+    const l = lazyImages.length
+    const toLoad = [];
 
-    let i = 0,
-        oldProgress;
+    let i = 0, oldProgress;
 
     for (; i < l; i++) toLoad.push(lazyImages[i].getAttribute('data-preload'));
 
@@ -223,16 +201,6 @@
     return toLoad.length ? new PreLoader(toLoad, options) : null;
   };
 
-  if (typeof define === 'function' && define.amd){
-    // we have an AMD loader.
-    define(function(){
-      return PreLoader;
-    });
-  }
-  else if (typeof module === 'object' && module.exports){
-    module.exports = PreLoader;
-  }
-  else {
-    this.preLoader = PreLoader;
-  }
-}).call(this);
+}
+
+export default PreLoader;
