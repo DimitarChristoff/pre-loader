@@ -158,7 +158,7 @@ class PreLoader {
    * Iterates through the queue of images to load
    * @returns {PreLoader}
    */
-  processQueuefunction(){
+  processQueue(){
     // runs through all queued items.
     const queue = this.queue;
     const len = queue.length;
@@ -179,10 +179,7 @@ class PreLoader {
    * @param {Object} options= optional options to pass to PreLoader
    * @returns {PreLoader} instance
    */
-  static lazyLoad(options){
-    if (!options)
-      options = {};
-
+  static lazyLoad(options = {}){
     const lazyImages = document.querySelectorAll(options.selector || 'img[data-preload]');
     const l = lazyImages.length
     const toLoad = [];

@@ -1,72 +1,57 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<title>pre-loader example</title>
-	<style >
-		img.preload {
-			width: 10%;
-			height: 10%;
-		}
-	</style>
-</head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Preloader Example</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.2.3/css/bulma.min.css" />
+  <style>
+
+    img.preload {
+      width: 10%;
+      height: 10%;
+    }
+
+    img.preload[data-preload] {
+      display: none
+    }
+    </style>
+    </head>
 <body>
-	<img class="preload" src="" data-preload="images/dummy.jpg?1" />
-	<img class="preload" src="" data-preload="images/dummy.jpg?2" />
-	<img class="preload" src="" data-preload="images/dummy.jpg?3" />
-	<img class="preload" src="" data-preload="images/dummy.jpg?4" />
-<script src="../pre-loader.js"></script>
-<script type="text/javascript">
-	// assign 50 non-cache-able images via an image generator
-	var imagesArray = new Array(10).join(',').split(',');
-	imagesArray = imagesArray.map(function(el, i){
-		// an actual dummy image generator online.
-		return 'images/dummy.jpg?' + +new Date() + i;
-	});
+  <nav class="nav">
+    <div class="nav-left">
+      <a class="nav-item is-brand" href="/">
+        Pre-loader examples
+      </a>
+    </div>
 
-	// uncomment to see error handling.
-	// imagesArray.push('404img.jpg');
-
-	// create a HTML5 progress element
-	var progress = document.createElement('progress');
-	progress.setAttribute('max', imagesArray.length);
-	progress.setAttribute('value', 0);
-	document.body.appendChild(progress);
-
-	var legend = document.createElement('span');
-	document.body.appendChild(legend);
-
-	// instantiate the pre-loader with an onProgress and onComplete handler
-	new preLoader(imagesArray, {
-		// pipeline: true,
-		cacheBurst: true,
-		onProgress: function(img, imageEl, index){
-			// fires every time an image is done or errors.
-			// imageEl will be falsy if error
-			console.log('just ' +  (!imageEl ? 'failed: ' : 'loaded: ') + img);
-
-			var percent = Math.floor((100 / this.queue.length) * this.completed.length);
-
-			// update the progress element
-			legend.innerHTML = '' + index + ' / ' + this.queue.length + ' ('+percent+'%)';
-			progress.value = index;
-
-			// can access any propery of this
-			console.log(this.completed.length + this.errors.length + ' / ' + this.queue.length + ' done');
-		},
-		onComplete: function(loaded, errors){
-			// fires when whole list is done. cache is primed.
-			console.log('done', loaded);
-
-			if (errors){
-				console.log('the following failed', errors);
-			}
-		},
-		onError: function(bombed){
-			console.log('error', bombed);
-		}
-	});
-
-	preLoader.lazyLoad();
-</script>
+    <div class="nav-right nav-menu">
+      <a class="nav-item" href="/">
+        Normal Parallel
+      </a>
+      <a class="nav-item" href="/?parallel">
+        Pipeline loading
+      </a>
+      <a class="nav-item" href="/?dom">
+        Load from DOM
+      </a>
+    </div>
+  </nav>
+  <div class="container">
+    <figure class="image">
+      <img class="preload" src="" data-preload="images/dummy.jpg?1" />
+    </figure>
+    <figure class="image">
+      <img class="preload" src="" data-preload="images/dummy.jpg?2" />
+    </figure>
+    <figure class="image">
+      <img class="preload" src="" data-preload="images/dummy.jpg?3" />
+    </figure>
+    <figure class="image">
+      <img class="preload" src="" data-preload="images/dummy.jpg?4" />
+    </figure>
+  </div>
+  <script src="/app.js"></script>
 </body>
 </html>
