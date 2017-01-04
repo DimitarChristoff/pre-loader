@@ -23,7 +23,8 @@ module.exports = {
   output: {
     path: __OUTPUT__,
     publicPath: './',
-    filename: 'pre-loader.min.js'
+    filename: 'pre-loader.min.js',
+    libraryTarget: 'umd'
   },
 
   module: {

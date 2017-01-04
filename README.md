@@ -44,6 +44,15 @@ import preLoader from 'pre-loader';
 import { lazyLoad } from 'pre-loader';
 ```
 
+To have a play, you can clone the repo and:
+
+```sh
+$ npm install
+$ npm run start
+```
+
+Open a browser and point to [http://localhost:8888](http://localhost:8888) - this runs a Webpack dev server and serves from the examples folder.
+
 _NOTE: if RequireJS or any other AMD-compatible loader is available, pre-loader will not go to the global object but define
 itself as an AMD module that can be required._
 
