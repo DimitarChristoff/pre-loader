@@ -181,7 +181,7 @@ class PreLoader {
    */
   static lazyLoad(options = {}){
     const lazyImages = document.querySelectorAll(options.selector || 'img[data-preload]');
-    const l = lazyImages.length
+    const l = lazyImages.length;
     const toLoad = [];
 
     let i = 0, oldProgress;

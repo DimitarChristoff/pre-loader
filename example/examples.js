@@ -49,7 +49,7 @@ const normal = () =>{
     }
   });
 
-}
+};
 
 
 const parallel = () => {
@@ -95,14 +95,14 @@ const parallel = () => {
       }
     }
   });
-}
+};
 
 const dom = () => {
-  preLoader.lazyLoad()
-}
+  preLoader.lazyLoad();
+};
 
 export {
   normal,
   parallel,
   dom
-}
+};

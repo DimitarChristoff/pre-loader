@@ -12,7 +12,8 @@
     "build": "npm run clean && cross-env NODE_ENV=production webpack --progress --debug",
     "test": "npm run eslint",
     "lint": "eslint . --ext .js --ext .jsx",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",

@@ -1,7 +1,7 @@
 pre-loader
 ==========
 
-Event-driven sequential image preloading and lazyloading in vanilla js (no dependencies). Supports IE8 or higher, though the main lib should work even in IE6. 
+Event-driven sequential image preloading and lazyloading in vanilla js (no dependencies). Supports IE8 or higher, though the main lib should work even in IE6.
 
 ## Installing
 
@@ -12,6 +12,11 @@ Either [download](https://github.com/DimitarChristoff/pre-loader/releases) it
 $ git clone https://github.com/DimitarChristoff/pre-loader.git
 ...
 $ cd pre-loader
+```
+
+...via npm:
+```sh
+$ npm i pre-loader
 ```
 
 ...or use bower:
@@ -32,6 +37,11 @@ new preLoader(/*Array*/images, /*Object*/options/);
 require(['../js/pre-loader'], function(preLoader){
 	new preLoader(/*Array*/images, /*Object*/options/);
 });
+
+// under CJS / webpack
+import preLoader from 'pre-loader';
+// or just DOM lazy load
+import { lazyLoad } from 'pre-loader';
 ```
 
 _NOTE: if RequireJS or any other AMD-compatible loader is available, pre-loader will not go to the global object but define
@@ -132,7 +142,7 @@ eg.
 <script>
 	// go with defaults, we're good.
 	var instance = preLoader.lazyLoad();
-	// or 
+	// or
 	var instance = preLoader.lazyLoad('#portfolio img.preload', { onComplete: function(){ });
 </script>
 ```
