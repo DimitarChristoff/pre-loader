@@ -1,6 +1,6 @@
 {
   "name": "pre-loader",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "pre-loading images in javascript",
   "main": "dist/pre-loader.min.js",
   "directories": {
